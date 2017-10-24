@@ -3,32 +3,25 @@
 #include <stdint.h>
 
 int main(int argc, char *argv[]){
-  printf("%s", argv[1]);
-  FILE* fichier = NULL;
-  fichier = fopen(argv[1], "r");
+  FILE *fic;
+  fic = fopen(argv[1], "r");
   uint32_t n;
   uint32_t m;
-  char *poubelle;
-  if (fichier != NULL){
-    fscanf(fichier, "%d, %d", &n, &m);
-    fscanf(fichier, "%s", poubelle);
+  if (fic != NULL){
+    fscanf(fic, "%d %d ", &n, &m);
     int tableauP[n];
     int tableauQ[m];
-
     for(uint32_t i=0; i<2*n; i++){
-      fscanf(fichier,"%d", &tableauP[i]);
+      fscanf(fic,"%d", &tableauP[i]);
       printf("%d", tableauP[i]);
+      printf("\n");
     }
-    fscanf(fichier,"%s", poubelle);
     for(uint32_t j=0; j<2*m; j++){
-      fscanf(fichier,"%d", &tableauQ[j]);
+      fscanf(fic,"%d", &tableauQ[j]);
       printf("%d", tableauQ[j]);
+      printf("\n");
     }
-
   }
-  else{
-    printf("pas de fichier");
-  }
-  fclose(fichier);
+  fclose(fic);
   return 0;
 }
