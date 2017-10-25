@@ -4,13 +4,13 @@ CC = clang
 LDFLAGS = -lm
 CFLAGS = -std=c99 -Wall -Wextra -g
 
-all: TPfrechet
+all: frechet
 
-TPfrechet: TPFrechet.o
+frechet: frechet.o
 	$(CC) $(LDFLAGS) -o $@ $^
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
-	rm -f *.o *~ TPfrechet
+	rm -f *.o *~ frechet
