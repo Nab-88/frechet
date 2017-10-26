@@ -124,12 +124,6 @@ int frechet(int *tableauP, int *tableauQ, int n, int m, int ***stock){
       tableauFrechet[i][j] = max(calcul_distance(tableauP, tableauQ, i, j), min(tableauFrechet[i-1][j], min(tableauFrechet[i][j-1], tableauFrechet[i-1][j-1])));
     }
   }
-  /*for(int i = 0; i < n; i++){
-    for(int j = 0; j < m; j++){
-      printf("tab[i][j] : %i", tableauFrechet[i][j]);
-    }
-  }
-  printf("\n");*/
   *stock = tableauFrechet;
   return (tableauFrechet[n-1][m-1]);
 }
@@ -192,8 +186,7 @@ struct liste_chainee* calcul_parcours_optimal(int *tableauP, int *tableauQ, int 
 int main(int argc, char* argv[]){
   int *n = malloc(sizeof(int));
   int *m = malloc(sizeof(int));
-  //char* nom_fichier_out = creation_nom_fichier_out(argv[1]);
-  // char* nom_fichier_out = creation_nom_fichier_out("test1");
+  // char* nom_fichier_out = creation_nom_fichier_out(argv[1]);
   lecture_taille(argv[1], n, m);
   int* tableauP = malloc(sizeof(int)*2*(*n));
   int* tableauQ = malloc(sizeof(int)*2*(*m));
@@ -207,6 +200,6 @@ int main(int argc, char* argv[]){
   parcours_optim -> val = (*m);
   struct liste_chainee *res_opti = calcul_parcours_optimal(tableauP, tableauQ, *n, *m, &taille_tab_opti, stockFrechet, parcours_optim);
   //afficherListe(res_opti);
-  ecrire_fichier("test4.out", res_opti, taille_tab_opti, dist_frechet);
+  ecrire_fichier("lol.out", res_opti, taille_tab_opti, dist_frechet);
   return EXIT_SUCCESS;
 }
