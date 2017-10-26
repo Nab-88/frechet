@@ -34,23 +34,6 @@ llist ajouterEnTete(llist liste, int valeur){
     return nouvelElement;
 }
 
-llist ajouterEnFin(llist liste, int valeur){
-    element* nouvelElement = malloc(sizeof(element));
-    nouvelElement->val = valeur;
-    nouvelElement->next = NULL;
-    if(liste == NULL){
-        return nouvelElement;
-    }
-    else{
-        element* temp=liste;
-        while(temp->next != NULL){
-            temp = temp->next;
-        }
-        temp->next = nouvelElement;
-        return liste;
-    }
-}
-
 llist element_i(llist liste, int indice){
     int i;
     for(i=0; i<indice && liste != NULL; i++){
@@ -61,6 +44,14 @@ llist element_i(llist liste, int indice){
     }
     else{
         return liste;
+    }
+}
+
+void afficherListe(llist liste){
+    element *tmp = liste;
+    while(tmp != NULL){
+        printf("%d ", tmp->val);
+        tmp = tmp->next;
     }
 }
 
@@ -165,63 +156,74 @@ void affichage_tableau(int *tableau, int* taille){
   printf("\n");
 }
 
-/*
-llist calcul_parcours_optimal(int *tableauP, int *tableauQ, int n, int m, int *taille_tab_opti){
-  int dist_frech = frechet(tableauP, tableauQ, n, m);
+// stockFrechet[i][j]  -> Df(i,j)
 
-  llist parcours_optim = NULL;
-  ajouterEnTete(parcours_optim, 1);
-  ajouterEnFin(parcours_optim, 1);
-  int i = 1;
-  int j = 1;
-  *taille_tab_opti = 0;
-  while((i != n) & (j != m)){
-    if(i == n){
-        j++;
-        ajouterEnFin(parcours_optim, i);
-        ajouterEnFin(parcours_optim, j);
-      }
-    else if(j == n){
-        i++;
-        ajouterEnFin(parcours_optim, i);
-        ajouterEnFin(parcours_optim, j);
-    }
-    else if (frechet(tableauP, tableauQ, i+1, j+1) <= dist_frech){
-      i++;
-      j++;
-      ajouterEnFin(parcours_optim, i);
-      ajouterEnFin(parcours_optim, j);
-    }
-    else if (frechet(tableauP, tableauQ, i+1, j) <= dist_frech){
-      i++;
-      ajouterEnFin(parcours_optim, i);
-      ajouterEnFin(parcours_optim, j);
-    }
-    else if (frechet(tableauP, tableauQ, i, j+1) <= dist_frech){
-        j++;
-        ajouterEnFin(parcours_optim, i);
-        ajouterEnFin(parcours_optim, j);
-      }
+llist calcul_parcours_optimal(int *tableauP, int *tableauQ, int n, int m, int *taille_tab_opti, int **stockFrechet){
+  if (*taille_tab_opti == 0){
+    printf("On rentre \n");
+    llist *parcours_optim = malloc(sizeof(llist));
+    parcours_optim->next = NULL;
+    parcours_optim->val = m-1;
+    ajouterEnTete(parcours_optim, n-1);
     *taille_tab_opti += 2;
   }
-  return (parcours_optim);
+/*
+  while( (n != 1) && ( m != 1)){
+    if ((stockFrechet[n-2][m] <= stockFrechet[n-2][m-2]) && (stockFrechet[n-2][m-1] <= stockFrechet[n-1][m-2])){
+      ajouterEnTete(parcours_optim, m-1);
+      ajouterEnTete(parcours_optim, n-2);
+      *taille_tab_opti += 2;
+      return calcul_parcours_optimal(tableauP, tableauQ, n-1, m, taille_tab_opti, stockFrechet);
+    }
+    else if ((stockFrechet[n-1][m-2] <= stockFrechet[n-2][m-2]) && (stockFrechet[n-1][m-2] <= stockFrechet[n-2][m-1])){
+      ajouterEnTete(parcours_optim, m-2);
+      ajouterEnTete(parcours_optim, n-1);
+      *taille_tab_opti += 2;
+      return calcul_parcours_optimal(tableauP, tableauQ, n, m-1, taille_tab_opti, stockFrechet);
+    }
+    else if ((stockFrechet[n-2][m-2] <= stockFrechet[n-2][m-1]) && (stockFrechet[n-2][m-2] <= stockFrechet[n-1][m-2])){
+      ajouterEnTete(parcours_optim, m-2);
+      ajouterEnTete(parcours_optim, n-2);
+      *taille_tab_opti += 2;
+      return calcul_parcours_optimal(tableauP, tableauQ, n-1, m-1, taille_tab_opti, stockFrechet);
+    }
+  }
+  if (n == 1){
+    while(m != 1){
+      ajouterEnTete(parcours_optim, m-1);
+      ajouterEnTete(parcours_optim, n);
+      m -= 1;
+      *taille_tab_opti += 2;
+    }
+  }
+  else if (m == 1){
+    while(n != 1){
+      ajouterEnTete(parcours_optim, m);
+      ajouterEnTete(parcours_optim, n-1);
+      n -= 1;
+      *taille_tab_opti += 2;
+    }
+  }*/
+  return parcours_optim;
 }
-*/
+
 
 int main(int argc, char* argv[]){
   int *n = malloc(sizeof(int));
   int *m = malloc(sizeof(int));
   //char* nom_fichier_out = creation_nom_fichier_out(argv[1]);
   // char* nom_fichier_out = creation_nom_fichier_out("test1");
-  int *taille_tab_opti = malloc(sizeof(int));
   lecture_taille("test4", n, m);
   int* tableauP = malloc(sizeof(int)*2*(*n));
   int* tableauQ = malloc(sizeof(int)*2*(*m));
   lecture_fichier("test4", tableauP, tableauQ, n, m);
-  //llist parcours_opti = calcul_parcours_optimal(tableauP, tableauQ, *n, *m, taille_tab_opti);
   int **stockFrechet;
   int dist_frechet = frechet(tableauP, tableauQ, *n, *m, &stockFrechet);
+  printf("a : %d \n", stockFrechet[(*n)-1][(*m)-1]);
+  int *taille_tab_opti = 0;
+  llist res_opti = calcul_parcours_optimal(tableauP, tableauQ, *n, *m, taille_tab_opti, stockFrechet);
+  afficherListe(res_opti);
   //affichage_tableau(tableauP, n);
-  //ecrire_fichier("test.out", parcours_opti, *taille_tab_opti, dist_frechet);
+  //ecrire_fichier("test.out", res_opti, *taille_tab_opti, dist_frechet);
   return EXIT_SUCCESS;
 }
