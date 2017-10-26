@@ -113,7 +113,7 @@ int calcul_distance(int *tableauP, int *tableauQ, int indiceP, int indiceQ){
   return (pow((tableauP[indiceP*2] - tableauQ[indiceQ*2]),2) + pow((tableauP[indiceP*2+1] - tableauQ[indiceQ*2+1]),2));
 }
 
-int frechet(int *tableauP, int *tableauQ, int n, int m){
+int frechet(int *tableauP, int *tableauQ, int n, int m, int ***stock){
   int **tableauFrechet;
   tableauFrechet = malloc(sizeof(*tableauFrechet)*n);
   for(int i=0; i < n*m; i++){
@@ -125,8 +125,6 @@ int frechet(int *tableauP, int *tableauQ, int n, int m){
   for (int i=1; i<m; i++){
       int maxi = calcul_distance(tableauP, tableauQ, 0, 1);
       for (int j=0; j<=i; j++){
-          printf("Dist maxi : %i \n", maxi);
-          printf("nouv dist : %i \n", calcul_distance(tableauP, tableauQ, 0, j));
           if (calcul_distance(tableauP, tableauQ, 0, j) > maxi){
               maxi = calcul_distance(tableauP, tableauQ, 0, j);
           }
@@ -155,6 +153,7 @@ int frechet(int *tableauP, int *tableauQ, int n, int m){
     }
   }
   printf("\n");*/
+  *stock = tableauFrechet;
   return (tableauFrechet[n-1][m-1]);
 }
 
@@ -166,8 +165,10 @@ void affichage_tableau(int *tableau, int* taille){
   printf("\n");
 }
 
+/*
 llist calcul_parcours_optimal(int *tableauP, int *tableauQ, int n, int m, int *taille_tab_opti){
   int dist_frech = frechet(tableauP, tableauQ, n, m);
+
   llist parcours_optim = NULL;
   ajouterEnTete(parcours_optim, 1);
   ajouterEnFin(parcours_optim, 1);
@@ -205,7 +206,7 @@ llist calcul_parcours_optimal(int *tableauP, int *tableauQ, int n, int m, int *t
   }
   return (parcours_optim);
 }
-
+*/
 
 int main(int argc, char* argv[]){
   int *n = malloc(sizeof(int));
@@ -213,14 +214,14 @@ int main(int argc, char* argv[]){
   //char* nom_fichier_out = creation_nom_fichier_out(argv[1]);
   // char* nom_fichier_out = creation_nom_fichier_out("test1");
   int *taille_tab_opti = malloc(sizeof(int));
-  lecture_taille("test1", n, m);
-  printf(" n : %d, m : %d \n", *n, *m);
+  lecture_taille("test4", n, m);
   int* tableauP = malloc(sizeof(int)*2*(*n));
   int* tableauQ = malloc(sizeof(int)*2*(*m));
-  lecture_fichier("test1", tableauP, tableauQ, n, m);
+  lecture_fichier("test4", tableauP, tableauQ, n, m);
   //llist parcours_opti = calcul_parcours_optimal(tableauP, tableauQ, *n, *m, taille_tab_opti);
-  int dist_frechet = frechet(tableauP, tableauQ, *n, *m);
-  affichage_tableau(tableauP, n);
+  int **stockFrechet;
+  int dist_frechet = frechet(tableauP, tableauQ, *n, *m, &stockFrechet);
+  //affichage_tableau(tableauP, n);
   //ecrire_fichier("test.out", parcours_opti, *taille_tab_opti, dist_frechet);
   return EXIT_SUCCESS;
 }
