@@ -18,37 +18,22 @@ int max(int a, int b) {
   return b;
 }
 
-typedef struct element element;
 
-struct element{
+struct liste_chainee{
   int val;
-  struct element *next;
+  struct liste_chainee *next;
 };
-typedef element* llist;
 
 
-llist ajouterEnTete(llist liste, int valeur){
-    element* nouvelElement = malloc(sizeof(element));
-    nouvelElement->val = valeur;
-    nouvelElement->next = liste;
-    return nouvelElement;
+struct liste_chainee* ajouterEnTete(struct liste_chainee *liste, int valeur){
+    struct liste_chainee* new_liste = malloc(sizeof(struct liste_chainee));
+    new_liste->val = valeur;
+    new_liste->next = liste;
+    return new_liste;
 }
 
-llist element_i(llist liste, int indice){
-    int i;
-    for(i=0; i<indice && liste != NULL; i++){
-        liste = liste->next;
-    }
-    if(liste == NULL){
-        return NULL;
-    }
-    else{
-        return liste;
-    }
-}
-
-void afficherListe(llist liste){
-    element *tmp = liste;
+void afficherListe(struct liste_chainee *liste){
+    struct liste_chainee *tmp = liste;
     while(tmp != NULL){
         printf("%d ", tmp->val);
         tmp = tmp->next;
@@ -79,8 +64,8 @@ void lecture_fichier(char *nom_fichier, int *tableauP, int *tableauQ, int *n, in
   fclose(fic);
 }
 
-
-void ecrire_fichier(char *nom_fichier, llist parcours_optim, int taille_tableau, int dist_frechet){
+/*
+void ecrire_fichier(char *nom_fichier, struct liste_chainee *parcours_optim, int taille_tableau, int dist_frechet){
   int long_optim = taille_tableau/2;
   FILE *fic;
   fic = fopen(nom_fichier, "w"); //ATTENTION MODIFIER LE NOM DE FICHIER POUR QUE CE SOIT LE MEME QUE L'ENTRÉE
@@ -92,7 +77,7 @@ void ecrire_fichier(char *nom_fichier, llist parcours_optim, int taille_tableau,
   }
   fclose(fic);
 }
-
+*/
 
 char* creation_nom_fichier_out(char* nom_fichier_in){
   //A voir si les fichiers d'entrés sont en .in ou pas ???
@@ -158,52 +143,47 @@ void affichage_tableau(int *tableau, int* taille){
 
 // stockFrechet[i][j]  -> Df(i,j)
 
-llist calcul_parcours_optimal(int *tableauP, int *tableauQ, int n, int m, int *taille_tab_opti, int **stockFrechet){
+struct liste_chainee* calcul_parcours_optimal(int *tableauP, int *tableauQ, int n, int m, int *taille_tab_opti, int **stockFrechet, struct liste_chainee *parcours_optim){
   if (*taille_tab_opti == 0){
-    printf("On rentre \n");
-    llist *parcours_optim = malloc(sizeof(llist));
-    parcours_optim->next = NULL;
-    parcours_optim->val = m-1;
-    ajouterEnTete(parcours_optim, n-1);
+    parcours_optim = ajouterEnTete(parcours_optim, n);
     *taille_tab_opti += 2;
   }
-/*
   while( (n != 1) && ( m != 1)){
-    if ((stockFrechet[n-2][m] <= stockFrechet[n-2][m-2]) && (stockFrechet[n-2][m-1] <= stockFrechet[n-1][m-2])){
-      ajouterEnTete(parcours_optim, m-1);
-      ajouterEnTete(parcours_optim, n-2);
+    if (stockFrechet[n-2][m-2] <= stockFrechet[n-1][m-1]){
+      parcours_optim = ajouterEnTete(parcours_optim, m-1);
+      parcours_optim = ajouterEnTete(parcours_optim, n-1);
       *taille_tab_opti += 2;
-      return calcul_parcours_optimal(tableauP, tableauQ, n-1, m, taille_tab_opti, stockFrechet);
+      return calcul_parcours_optimal(tableauP, tableauQ, n-1, m-1, taille_tab_opti, stockFrechet, parcours_optim);
     }
-    else if ((stockFrechet[n-1][m-2] <= stockFrechet[n-2][m-2]) && (stockFrechet[n-1][m-2] <= stockFrechet[n-2][m-1])){
-      ajouterEnTete(parcours_optim, m-2);
-      ajouterEnTete(parcours_optim, n-1);
+    else if (stockFrechet[n-1][m-2] <= stockFrechet[n-1][m-1]){
+      parcours_optim = ajouterEnTete(parcours_optim, m-1);
+      parcours_optim = ajouterEnTete(parcours_optim, n);
       *taille_tab_opti += 2;
-      return calcul_parcours_optimal(tableauP, tableauQ, n, m-1, taille_tab_opti, stockFrechet);
+      return calcul_parcours_optimal(tableauP, tableauQ, n, m-1, taille_tab_opti, stockFrechet, parcours_optim);
     }
-    else if ((stockFrechet[n-2][m-2] <= stockFrechet[n-2][m-1]) && (stockFrechet[n-2][m-2] <= stockFrechet[n-1][m-2])){
-      ajouterEnTete(parcours_optim, m-2);
-      ajouterEnTete(parcours_optim, n-2);
+    else if (stockFrechet[n-2][m] <= stockFrechet[n-1][m-1]){
+      parcours_optim = ajouterEnTete(parcours_optim, m);
+      parcours_optim = ajouterEnTete(parcours_optim, n-1);
       *taille_tab_opti += 2;
-      return calcul_parcours_optimal(tableauP, tableauQ, n-1, m-1, taille_tab_opti, stockFrechet);
+      return calcul_parcours_optimal(tableauP, tableauQ, n-1, m, taille_tab_opti, stockFrechet, parcours_optim);
     }
   }
   if (n == 1){
     while(m != 1){
-      ajouterEnTete(parcours_optim, m-1);
-      ajouterEnTete(parcours_optim, n);
+      parcours_optim = ajouterEnTete(parcours_optim, m);
+      parcours_optim = ajouterEnTete(parcours_optim, n);
       m -= 1;
       *taille_tab_opti += 2;
     }
   }
   else if (m == 1){
     while(n != 1){
-      ajouterEnTete(parcours_optim, m);
-      ajouterEnTete(parcours_optim, n-1);
+      parcours_optim = ajouterEnTete(parcours_optim, m);
+      parcours_optim = ajouterEnTete(parcours_optim, n);
       n -= 1;
       *taille_tab_opti += 2;
     }
-  }*/
+  }
   return parcours_optim;
 }
 
@@ -220,8 +200,11 @@ int main(int argc, char* argv[]){
   int **stockFrechet;
   int dist_frechet = frechet(tableauP, tableauQ, *n, *m, &stockFrechet);
   printf("a : %d \n", stockFrechet[(*n)-1][(*m)-1]);
-  int *taille_tab_opti = 0;
-  llist res_opti = calcul_parcours_optimal(tableauP, tableauQ, *n, *m, taille_tab_opti, stockFrechet);
+  int taille_tab_opti = 0;
+  struct liste_chainee *parcours_optim = malloc(sizeof(struct liste_chainee));
+  parcours_optim -> next = NULL;
+  parcours_optim -> val = (*m);
+  struct liste_chainee *res_opti = calcul_parcours_optimal(tableauP, tableauQ, *n, *m, &taille_tab_opti, stockFrechet, parcours_optim);
   afficherListe(res_opti);
   //affichage_tableau(tableauP, n);
   //ecrire_fichier("test.out", res_opti, *taille_tab_opti, dist_frechet);
