@@ -5,14 +5,14 @@
 #include <string.h>
 
 int min(int a, int b) {
-  if (a<b) {
+  if (a < b) {
     return a;
   }
   return b;
 }
 
 int max(int a, int b) {
-  if (b<a) {
+  if (b < a) {
     return a;
   }
   return b;
@@ -124,29 +124,37 @@ int frechet(int *tableauP, int *tableauQ, int n, int m){
 
   for (int i=1; i<m; i++){
       int maxi = calcul_distance(tableauP, tableauQ, 0, 1);
-      for (int j=1; j<=i; j++){
+      for (int j=0; j<=i; j++){
+          printf("Dist maxi : %i \n", maxi);
+          printf("nouv dist : %i \n", calcul_distance(tableauP, tableauQ, 0, j));
           if (calcul_distance(tableauP, tableauQ, 0, j) > maxi){
               maxi = calcul_distance(tableauP, tableauQ, 0, j);
           }
       }
       tableauFrechet[0][i] = maxi;
   }
-  
+
    for (int i=1; i<n; i++){
       int maxi = calcul_distance(tableauP, tableauQ, 1, 0);
-      for (int j=1; j<=i; j++){
+      for (int j=0; j<=i; j++){
           if (calcul_distance(tableauP, tableauQ, j, 0) > maxi){
               maxi = calcul_distance(tableauP, tableauQ, j, 0);
           }
       }
       tableauFrechet[i][0] = maxi;
   }
- 
+
   for (int i=1; i < n; i++){
     for (int j=1; j < m; j++){
       tableauFrechet[i][j] = max(calcul_distance(tableauP, tableauQ, i, j), min(tableauFrechet[i-1][j], min(tableauFrechet[i][j-1], tableauFrechet[i-1][j-1])));
     }
   }
+  /*for(int i = 0; i < n; i++){
+    for(int j = 0; j < m; j++){
+      printf("tab[i][j] : %i", tableauFrechet[i][j]);
+    }
+  }
+  printf("\n");*/
   return (tableauFrechet[n-1][m-1]);
 }
 
@@ -199,12 +207,12 @@ int main(int argc, char* argv[]){
   //char* nom_fichier_out = creation_nom_fichier_out(argv[1]);
   // char* nom_fichier_out = creation_nom_fichier_out("test1");
   int *taille_tab_opti = malloc(sizeof(int));
-  lecture_taille("test3", n, m);
+  lecture_taille("benchmark1", n, m);
   printf(" n : %d, m : %d \n", *n, *m);
   int* tableauP = malloc(sizeof(int)*2*(*n));
   int* tableauQ = malloc(sizeof(int)*2*(*m));
-  lecture_fichier("test3", tableauP, tableauQ, n, m);
-  /*
+  lecture_fichier("benchmark1", tableauP, tableauQ, n, m);
+/*
   printf("Affichage de P \n");
   for (int i=0; i<2*(*n); i++){
       printf("%d /", tableauP[i]);
