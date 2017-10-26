@@ -158,7 +158,13 @@ int frechet(int *tableauP, int *tableauQ, int n, int m){
   return (tableauFrechet[n-1][m-1]);
 }
 
-
+void affichage_tableau(int *tableau, int* taille){
+  printf("Affichage du tableau :\n");
+  for (int i=0; i<2*(*taille); i++){
+      printf("%d ", tableau[i]);
+  }
+  printf("\n");
+}
 
 llist calcul_parcours_optimal(int *tableauP, int *tableauQ, int n, int m, int *taille_tab_opti){
   int dist_frech = frechet(tableauP, tableauQ, n, m);
@@ -207,27 +213,14 @@ int main(int argc, char* argv[]){
   //char* nom_fichier_out = creation_nom_fichier_out(argv[1]);
   // char* nom_fichier_out = creation_nom_fichier_out("test1");
   int *taille_tab_opti = malloc(sizeof(int));
-  lecture_taille("benchmark1", n, m);
+  lecture_taille("test1", n, m);
   printf(" n : %d, m : %d \n", *n, *m);
   int* tableauP = malloc(sizeof(int)*2*(*n));
   int* tableauQ = malloc(sizeof(int)*2*(*m));
-  lecture_fichier("benchmark1", tableauP, tableauQ, n, m);
-/*
-  printf("Affichage de P \n");
-  for (int i=0; i<2*(*n); i++){
-      printf("%d /", tableauP[i]);
-  }
-  printf("\n");
-  printf("Affichage de Q \n");
-  for (int i=0; i<2*(*m); i++){
-      printf("%d /", tableauQ[i]);
-  }
-  printf("\n");
-  */
+  lecture_fichier("test1", tableauP, tableauQ, n, m);
   //llist parcours_opti = calcul_parcours_optimal(tableauP, tableauQ, *n, *m, taille_tab_opti);
   int dist_frechet = frechet(tableauP, tableauQ, *n, *m);
-  printf("distance de frechet :%i", dist_frechet);
-  printf("\n");
+  affichage_tableau(tableauP, n);
   //ecrire_fichier("test.out", parcours_opti, *taille_tab_opti, dist_frechet);
   return EXIT_SUCCESS;
 }
