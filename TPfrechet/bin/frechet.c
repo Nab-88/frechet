@@ -76,14 +76,15 @@ void ecrire_fichier(char *nom_fichier, struct liste_chainee *parcours_optim, int
     parcours_optim = parcours_optim->next;
   }
   fprintf(fic, "%d ", parcours_optim->val);
+  fprintf(fic, "\n");
   fclose(fic);
 }
 
 
 char* creation_nom_fichier_out(char* nom_fichier_in){
   //A voir si les fichiers d'entrés sont en .in ou pas ???
-  char* nom_fichier_out = strcat(nom_fichier_in, ".out");
-  return(nom_fichier_out);
+  char* output = strcat(nom_fichier_in, ".out");
+  return output;
 }
 
 int calcul_distance(int *tableauP, int *tableauQ, int indiceP, int indiceQ){
@@ -186,7 +187,9 @@ struct liste_chainee* calcul_parcours_optimal(int *tableauP, int *tableauQ, int 
 int main(int argc, char* argv[]){
   int *n = malloc(sizeof(int));
   int *m = malloc(sizeof(int));
-  // char* nom_fichier_out = creation_nom_fichier_out(argv[1]);
+  char input[80];
+  strcpy(input,argv[1]);
+  strcat(input, ".out");
   lecture_taille(argv[1], n, m);
   int* tableauP = malloc(sizeof(int)*2*(*n));
   int* tableauQ = malloc(sizeof(int)*2*(*m));
@@ -200,6 +203,6 @@ int main(int argc, char* argv[]){
   parcours_optim -> val = (*m);
   struct liste_chainee *res_opti = calcul_parcours_optimal(tableauP, tableauQ, *n, *m, &taille_tab_opti, stockFrechet, parcours_optim);
   //afficherListe(res_opti);
-  ecrire_fichier("lol.out", res_opti, taille_tab_opti, dist_frechet);
+  ecrire_fichier(input, res_opti, taille_tab_opti, dist_frechet);
   return EXIT_SUCCESS;
 }
