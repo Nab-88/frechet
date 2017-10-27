@@ -182,7 +182,16 @@ struct liste_chainee* calcul_parcours_optimal(int *tableauP, int *tableauQ, int 
   }
   return parcours_optim;
 }
-
+void free_liste_chainee(struct liste_chainee * liste ){
+  struct liste_chainee * prec = liste;
+  struct liste_chainee * current;
+  while (prec != NULL){
+    printf("ici");
+    current = prec -> next;
+    free(prec);
+    prec = current;
+  }
+  }
 
 int main(int argc, char* argv[]){
   int *n = malloc(sizeof(int));
@@ -196,7 +205,7 @@ int main(int argc, char* argv[]){
   lecture_fichier(argv[1], tableauP, tableauQ, n, m);
   int **stockFrechet;
   int dist_frechet = frechet(tableauP, tableauQ, *n, *m, &stockFrechet);
-  printf("a : %d \n", stockFrechet[(*n)-1][(*m)-1]);
+  // printf("a : %d \n", stockFrechet[(*n)-1][(*m)-1]);
   int taille_tab_opti = 0;
   struct liste_chainee *parcours_optim = malloc(sizeof(struct liste_chainee));
   parcours_optim -> next = NULL;
@@ -208,6 +217,6 @@ int main(int argc, char* argv[]){
   free(m);
   free(tableauP);
   free(tableauQ);
-  free(parcours_optim);
+  free_liste_chainee(res_opti);
   return EXIT_SUCCESS;
 }
