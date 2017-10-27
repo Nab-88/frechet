@@ -204,5 +204,10 @@ int main(int argc, char* argv[]){
   struct liste_chainee *res_opti = calcul_parcours_optimal(tableauP, tableauQ, *n, *m, &taille_tab_opti, stockFrechet, parcours_optim);
   //afficherListe(res_opti);
   ecrire_fichier(input, res_opti, taille_tab_opti, dist_frechet);
+  free(n);
+  free(m);
+  free(tableauP);
+  free(tableauQ);
+  free(parcours_optim);
   return EXIT_SUCCESS;
 }
